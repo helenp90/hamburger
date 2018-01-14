@@ -1,5 +1,28 @@
 var connection = require("./sqlconnect.js");
 
+//A function that will be used to build queries
+function printQuestionMarks(num) {
+	var arr = [];
+
+	for (var i = 0; i < num; i++) {
+		arr.push('?');
+	}
+
+	return arr.toString();
+}
+function objToSql(ob) {
+	var arr = [];
+
+	for (var key in ob) {
+		if (ob.hasOwnProperty(key)) {
+			arr.push(key + '=' + ob[key]);
+		}
+	}
+
+	return arr.toString();
+}
+
+
 // Object for all our SQL statement functions.
 var orm = {
     all: function(tableInput, cb) {
@@ -8,9 +31,11 @@ var orm = {
         if (err) {
           throw err;
         }
+        //send the query back to the callback function
         cb(result);
       });
     },
+    // create function to create a burger in the table.
     create: function(table, cols, vals, cb) {
       var queryString = "INSERT INTO " + table;
   
@@ -23,6 +48,7 @@ var orm = {
       queryString += ") ";
   
       console.log(queryString);
+      console.log(vals)
   
       connection.query(queryString, vals, function(err, result) {
         if (err) {
